@@ -4,7 +4,7 @@ set -euo pipefail
 DATA_DIR="/15441-project3/cmu-tube/http_server/data"
 HTTP_ROOT="/15441-project3/cmu-tube/http_server"
 ARCHIVE_URL="https://cmu.box.com/shared/static/wkawkp9ilijmokduf3vui2jin6s6o7ta.tar"
-ARCHIVE_NAME="y3c0t7jav94p08oo1ziz7wjwfz0145fp.tar"
+ARCHIVE_NAME="video.tar"
 
 # Ensure data exists
 if [ ! -d "$DATA_DIR" ] || [ -z "$(ls -A "$DATA_DIR" 2>/dev/null || true)" ]; then
