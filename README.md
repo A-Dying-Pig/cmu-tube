@@ -10,6 +10,7 @@ This README provides a quick guide to help you set up your development and testi
 
 We will use **Docker** to provide a consistent environment for development and testing.  
 If you don’t already have Docker installed, follow the [official installation guide](https://docs.docker.com/engine/install/).
+For development, we recommend testing on an x86-based Ubuntu machine.
 
 ### Build the Docker Image
 Run the following command in the project root directory:
@@ -124,3 +125,60 @@ When you are satisfied with your improved algorithm:
 
 * Gradescope will automatically run your code under all the network traces for 60 seconds.
 * 🏆 A live scoreboard will show your ranking based on the overall QoE score — the top performer wins a 🎁 special prize!
+
+
+## 🌐 6. (Optional) Watch CMU-Tube in Your Browser
+
+This section lets you watch CMU-Tube directly in your browser instead of through the automated tests.
+It requires a GUI environment and a web browser (we tested on macOS M2 + Chrome).
+
+💡 Note: ARM-based CPUs are fine for this part because we use your host browser to access video data.
+The automated test suite, however, still requires an x86 CPU since it depends on google-chrome.deb, which is not supported on ARM.
+
+#### 🎬 Demo: CMU-Tube
+
+![CMU-Tube Demo](./http_server/cmu-tube-demo.gif)
+
+
+### Step 1: Launch the HTTP Server Inside Docker and Expose Ports
+Start the container you built earlier, but this time expose the required ports so your host browser can reach the HTTP server inside Docker:
+```bash
+docker run -it \
+    -v /path/to/cmu-tube/on/host/machine:/15441-project3/cmu-tube \
+    -p 15441:15441 \
+    -p 9001-9012:9001-9012 \
+    cmu-tube-env
+```
+This launches the HTTP server inside Docker and allows your host browser to access it through the mapped ports.
+
+Once the container starts, verify it works by opening 👉 `http://localhost:15441/` in your host browser.
+You should see the CMU-Tube homepage.
+
+### Step 2: Watch Videos Under Different Network Conditions
+To simulate different network traces, enable a specific network setting from within the container:
+```bash
+cd cmu-tube
+./enable_network_for_browser.sh <network_trace>
+```
+Example:
+```bash
+./enable_network_for_browser.sh 10mbit-100ms-1min
+```
+This sets up the same network conditions used by node test-runner.js, but instead of running headless Chrome inside Docker, you’ll use **your host browser** as the video client.
+
+Next, open your browser and visit:
+```
+http://localhost:<test_port>
+```
+For example, the trace 10mbit-100ms-1min uses port **9004**, so you should visit:
+```
+http://localhost:9004
+```
+Each network trace has its own port number — you can check which one is used by inspecting the `enable_network_for_browser.sh` script.
+
+
+
+### Step 3: (Optional) Extend the Network Duration
+By default, each network trace script runs for 60 seconds. After that, the network tunnel shuts down and playback stops.
+
+If you’d like to watch the full video (≈10 minutes) under a specific network trace, simply edit the corresponding script in `./scripts/<trace>.sh` and increase the value in the `sleep` command to a longer duration.

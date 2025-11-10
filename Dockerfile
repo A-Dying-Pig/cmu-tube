@@ -42,20 +42,28 @@ RUN bash -c ". $NVM_DIR/nvm.sh && \
     rm -rf /tmp/cmu-tube"
 
 # ----------------------------
-# Install Google Chrome
+# Detect architecture and conditionally install Chrome + Toxiproxy
 # ----------------------------
-RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt-get update && \
-    apt-get install -y ./google-chrome-stable_current_amd64.deb && \
-    rm google-chrome-stable_current_amd64.deb && \
-    google-chrome --version
-
-# ----------------------------
-# Install Toxiproxy binaries
-# ----------------------------
-RUN wget https://github.com/Shopify/toxiproxy/releases/download/v2.12.0/toxiproxy-server-linux-amd64 -O /usr/local/bin/toxiproxy-server && \
-    wget https://github.com/Shopify/toxiproxy/releases/download/v2.12.0/toxiproxy-cli-linux-amd64 -O /usr/local/bin/toxiproxy-cli && \
-    chmod +x /usr/local/bin/toxiproxy-server /usr/local/bin/toxiproxy-cli
+RUN ARCH=$(uname -m) && echo "Detected architecture: $ARCH" && \
+    if [ "$ARCH" = "x86_64" ]; then \
+        echo "Installing Google Chrome (x86_64)..." && \
+        wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+        apt-get update && apt-get install -y ./google-chrome-stable_current_amd64.deb && \
+        rm google-chrome-stable_current_amd64.deb && \
+        google-chrome --version && \
+        echo "Installing Toxiproxy (x86_64)..." && \
+        wget -q https://github.com/Shopify/toxiproxy/releases/download/v2.12.0/toxiproxy-server-linux-amd64 -O /usr/local/bin/toxiproxy-server && \
+        wget -q https://github.com/Shopify/toxiproxy/releases/download/v2.12.0/toxiproxy-cli-linux-amd64 -O /usr/local/bin/toxiproxy-cli && \
+        chmod +x /usr/local/bin/toxiproxy-server /usr/local/bin/toxiproxy-cli; \
+    elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then \
+        echo "Skipping Chrome installation for ARM. TODO: use Chromium for ARM processors." && \
+        echo "Installing Toxiproxy (ARM64)..." && \
+        wget -q https://github.com/Shopify/toxiproxy/releases/download/v2.12.0/toxiproxy-server-linux-arm64 -O /usr/local/bin/toxiproxy-server && \
+        wget -q https://github.com/Shopify/toxiproxy/releases/download/v2.12.0/toxiproxy-cli-linux-arm64 -O /usr/local/bin/toxiproxy-cli && \
+        chmod +x /usr/local/bin/toxiproxy-server /usr/local/bin/toxiproxy-cli; \
+    else \
+        echo "⚠️ Unknown architecture: $ARCH. Skipping Chrome and Toxiproxy installation."; \
+    fi
 
 # ----------------------------
 # Expose port and startup
