@@ -86,7 +86,7 @@ These traces are derived from real-world [measurements](https://skulddata.cs.uma
 | Trace Name                   | Scenario  | Description                                                   |
 | ---------------------------- | --------- | ------------------------------------------------------------- |
 | `jernbanetorget_ljabru_tram` | Tram ride | Bandwidth along a tram route from **Jernbanetorget → Ljabru** |
-| `snaroya_smestad_car`        | Car drive | Bandwidth during a drive from **Snarøya → Smestad**           |
+| `snaroya_smestad_car`        | Car drive | Bandwidth during a drive from **Snaroya → Smestad**           |
 
 
 ## ⚙️ 4. Implementing and Testing Your ABR Algorithm
@@ -124,7 +124,7 @@ When you are satisfied with your improved algorithm:
     * `player.js`
 
 * Gradescope will automatically run your code under all the network traces for 60 seconds.
-* 🏆 A live scoreboard will show your ranking based on the overall QoE score — the top performer wins a 🎁 special prize!
+* 🏆 A live leaderboard will show your ranking based on the overall QoE score — the top performer wins a 🎁 special prize!
 
 
 ## 🌐 6. (Optional) Watch CMU-Tube in Your Browser
